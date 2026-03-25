@@ -1,0 +1,62 @@
+apiVersion: ai.sap.com/v1alpha1
+kind: ServingTemplate
+metadata:
+  name: qwen3guard-gen-8b-vllm
+  annotations:
+    scenarios.ai.sap.com/description: "Qwen3Guard-Gen-8B Safety Guardrail with vLLM - Baked Image"
+    scenarios.ai.sap.com/name: "qwen3guard"
+    executables.ai.sap.com/description: "vLLM OpenAI-compatible server"
+    executables.ai.sap.com/name: "qwen3guard-serving"
+  labels:
+    scenarios.ai.sap.com/id: "qwen3guard"
+    ai.sap.com/version: "1.0.0"
+spec:
+  template:
+    apiVersion: "serving.kserve.io/v1beta1"
+    metadata:
+      annotations: |
+        autoscaling.knative.dev/metric: concurrency
+        autoscaling.knative.dev/target: "1"
+        autoscaling.knative.dev/targetBurstCapacity: "0"
+      labels: |
+        ai.sap.com/resourcePlan: infer.m
+    spec: |
+      predictor:
+        imagePullSecrets:
+          - name: docker-secret
+        minReplicas: 1
+        maxReplicas: 1
+        containers:
+          - name: kserve-container
+            image: docker.io/lokeshr11/qwen3guard-gen-8b:v1.1
+            ports:
+              - containerPort: 8080
+                protocol: TCP
+            resources:
+              limits:
+                nvidia.com/gpu: 1
+                memory: 28Gi
+                cpu: "6"
+              requests:
+                nvidia.com/gpu: 1
+                memory: 20Gi
+                cpu: "4"
+            env:
+              - name: HF_HOME
+                value: "/root/.cache/huggingface"
+              - name: PYTHONUNBUFFERED
+                value: "1"
+              - name: VLLM_LOGGING_LEVEL
+                value: "INFO"
+            readinessProbe:
+              httpGet:
+                path: /v1/models
+                port: 8080
+              initialDelaySeconds: 120
+              periodSeconds: 30
+            livenessProbe:
+              httpGet:
+                path: /v1/models
+                port: 8080
+              initialDelaySeconds: 180
+              periodSeconds: 60
