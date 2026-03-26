@@ -21,12 +21,12 @@ snapshot_download(
 print("Model baked successfully!")
 EOF
 
-# Clean temporary HF cache (model already in /models)
+# Clean temporary HF cache 
 RUN rm -rf /root/.cache/huggingface
 
 EXPOSE 8080
 
-# Updated CMD — using vllm serve instead of python -m
+
 CMD ["vllm", "serve", "/models/Qwen3Guard-Gen-8B", \
      "--host", "0.0.0.0", \
      "--port", "8080", \
