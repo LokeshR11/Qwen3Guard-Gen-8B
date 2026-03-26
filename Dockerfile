@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED=1
 # vLLM logging level
 ENV VLLM_LOGGING_LEVEL=INFO
 
-
+# Bake the model into the image (self-contained)
 RUN mkdir -p /models/Qwen3Guard-Gen-8B && \
     python3 - <<EOF
 from huggingface_hub import snapshot_download
@@ -16,7 +16,7 @@ snapshot_download(
     local_dir_use_symlinks=False,
     resume_download=True,
     max_workers=4,
-    ignore_patterns=["*.bin", "*.msgpack"]
+    ignore_patterns=["*.bin", "*.ot", "*.msgpack"]
 )
 print("Model baked successfully!")
 EOF
@@ -26,8 +26,8 @@ RUN rm -rf /root/.cache/huggingface
 
 EXPOSE 8080
 
-CMD ["python", "-m", "vllm.entrypoints.openai.api_server", \
-     "--model", "/models/Qwen3Guard-Gen-8B", \
+# Updated CMD — using vllm serve instead of python -m
+CMD ["vllm", "serve", "/models/Qwen3Guard-Gen-8B", \
      "--host", "0.0.0.0", \
      "--port", "8080", \
      "--dtype", "auto", \
@@ -35,6 +35,6 @@ CMD ["python", "-m", "vllm.entrypoints.openai.api_server", \
      "--gpu-memory-utilization", "0.85", \
      "--tensor-parallel-size", "1", \
      "--trust-remote-code", \
-     "--log-level", "INFO", \
      "--enforce-eager", \
      "--max-num-seqs", "4"]
+
