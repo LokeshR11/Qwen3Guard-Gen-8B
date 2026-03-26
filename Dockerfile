@@ -8,12 +8,12 @@ ENV PYTHONUNBUFFERED=1
 ENV VLLM_LOGGING_LEVEL=INFO
 
 # -------------------------
-# Ensure Qwen3 compatibility
+# Required for Qwen3 architecture
 # -------------------------
 RUN pip install --no-cache-dir "transformers>=4.51.0"
 
 # -------------------------
-# Bake the model into image
+# Bake the model into the image
 # -------------------------
 RUN mkdir -p /models/Qwen3Guard-Gen-8B && \
     python3 - <<EOF
@@ -37,20 +37,24 @@ EOF
 RUN rm -rf /root/.cache/huggingface
 
 # -------------------------
-# SAP requires port 8080
+# SAP AI Core requires port 8080
 # -------------------------
 EXPOSE 8080
 
 
-CMD ["python", "-m", "vllm.entrypoints.openai.api_server",
-     "--model", "/models/Qwen3Guard-Gen-8B",
-     "--host", "0.0.0.0",
-     "--port", "8080",
-     "--dtype", "auto",
-     "--max-model-len", "4096",
-     "--gpu-memory-utilization", "0.85",
-     "--tensor-parallel-size", "1",
-     "--trust-remote-code",
-     "--log-level", "INFO",
-     "--enforce-eager",
-     "--max-num-seqs", "4"]
+CMD [
+  "python",
+  "-m",
+  "vllm.entrypoints.openai.api_server",
+  "--model", "/models/Qwen3Guard-Gen-8B",
+  "--host", "0.0.0.0",
+  "--port", "8080",
+  "--dtype", "auto",
+  "--max-model-len", "4096",
+  "--gpu-memory-utilization", "0.85",
+  "--tensor-parallel-size", "1",
+  "--trust-remote-code",
+  "--log-level", "INFO",
+  "--enforce-eager",
+  "--max-num-seqs", "4"
+]
