@@ -5,7 +5,7 @@ ENV HF_HOME=/root/.cache/huggingface
 ENV PYTHONUNBUFFERED=1
 ENV VLLM_LOGGING_LEVEL=INFO
 
-# Bake the model into the image (self-contained)
+# Bake the model into the image
 RUN mkdir -p /models/Qwen3Guard-Gen-8B && \
     python3 - <<EOF
 from huggingface_hub import snapshot_download
@@ -20,20 +20,20 @@ snapshot_download(
 print("✅ Model baked successfully!")
 EOF
 
-# Clean temporary HF cache
+# Clean cache
 RUN rm -rf /root/.cache/huggingface
 
 EXPOSE 8080
 
-CMD ["vllm", "serve", \
-     "/models/Qwen3Guard-Gen-8B", \
-     "--host", "0.0.0.0", \
-     "--port", "8080", \
-     "--dtype", "auto", \
-     "--max-model-len", "4096", \
-     "--gpu-memory-utilization", "0.85", \
-     "--tensor-parallel-size", "1", \
-     "--trust-remote-code", \
-     "--log-level", "INFO", \
-     "--enforce-eager", \
-     "--max-num-seqs", "4"]
+
+CMD vllm serve /models/Qwen3Guard-Gen-8B \
+    --host 0.0.0.0 \
+    --port 8080 \
+    --dtype auto \
+    --max-model-len 4096 \
+    --gpu-memory-utilization 0.85 \
+    --tensor-parallel-size 1 \
+    --trust-remote-code \
+    --log-level INFO \
+    --enforce-eager \
+    --max-num-seqs 4
