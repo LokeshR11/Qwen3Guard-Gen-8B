@@ -30,14 +30,4 @@ EXPOSE 8080
 ENTRYPOINT []
 
 
-CMD ["vllm", "serve", "/models/Qwen3Guard-Gen-8B",
-     "--host", "0.0.0.0",
-     "--port", "8080",
-     "--dtype", "auto",
-     "--max-model-len", "4096",
-     "--gpu-memory-utilization", "0.85",
-     "--tensor-parallel-size", "1",
-     "--trust-remote-code",
-     "--log-level", "INFO",
-     "--enforce-eager",
-     "--max-num-seqs", "4"]
+CMD ["vllm","serve","/models/Qwen3Guard-Gen-8B","--host","0.0.0.0","--port","8080","--dtype","auto","--max-model-len","4096","--gpu-memory-utilization","0.85","--tensor-parallel-size","1","--trust-remote-code","--log-level","INFO","--enforce-eager","--max-num-seqs","4"]
