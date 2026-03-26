@@ -1,6 +1,5 @@
 FROM vllm/vllm-openai:latest
 
-# Environment
 ENV HF_HOME=/root/.cache/huggingface
 ENV PYTHONUNBUFFERED=1
 ENV VLLM_LOGGING_LEVEL=INFO
@@ -23,10 +22,22 @@ snapshot_download(
 print("Model baked successfully")
 EOF
 
-# Clean cache
 RUN rm -rf /root/.cache/huggingface
 
 EXPOSE 8080
 
 
-CMD ["python", "-m", "vllm.entrypoints.openai.api_server", "--model", "/models/Qwen3Guard-Gen-8B", "--host", "0.0.0.0", "--port", "8080", "--dtype", "auto", "--max-model-len", "4096", "--gpu-memory-utilization", "0.85", "--tensor-parallel-size", "1", "--trust-remote-code", "--log-level", "INFO", "--enforce-eager", "--max-num-seqs", "4"]
+ENTRYPOINT []
+
+
+CMD ["vllm", "serve", "/models/Qwen3Guard-Gen-8B",
+     "--host", "0.0.0.0",
+     "--port", "8080",
+     "--dtype", "auto",
+     "--max-model-len", "4096",
+     "--gpu-memory-utilization", "0.85",
+     "--tensor-parallel-size", "1",
+     "--trust-remote-code",
+     "--log-level", "INFO",
+     "--enforce-eager",
+     "--max-num-seqs", "4"]
