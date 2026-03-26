@@ -17,7 +17,7 @@ snapshot_download(
     max_workers=4,
     ignore_patterns=["*.bin", "*.ot", "*.msgpack"]
 )
-print("Model baked successfully!")
+print("✅ Model baked successfully!")
 EOF
 
 # Clean temporary HF cache
@@ -25,8 +25,8 @@ RUN rm -rf /root/.cache/huggingface
 
 EXPOSE 8080
 
-CMD ["python", "-m", "vllm.entrypoints.openai.api_server", \
-     "--model", "/models/Qwen3Guard-Gen-8B", \
+CMD ["vllm", "serve", \
+     "/models/Qwen3Guard-Gen-8B", \
      "--host", "0.0.0.0", \
      "--port", "8080", \
      "--dtype", "auto", \
@@ -34,5 +34,6 @@ CMD ["python", "-m", "vllm.entrypoints.openai.api_server", \
      "--gpu-memory-utilization", "0.85", \
      "--tensor-parallel-size", "1", \
      "--trust-remote-code", \
+     "--log-level", "INFO", \
      "--enforce-eager", \
      "--max-num-seqs", "4"]
