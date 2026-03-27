@@ -28,7 +28,7 @@ spec:
         maxReplicas: 1
         containers:
           - name: kserve-container
-            image: docker.io/lokeshr11/qwen3guard-gen-8b:v1.13
+            image: docker.io/lokeshr11/qwen3guard-gen-8b:v1.14
             ports:
               - containerPort: 8080
                 protocol: TCP
