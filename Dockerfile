@@ -1,19 +1,20 @@
 FROM vllm/vllm-openai:latest
 
 
+ENV HOME=/tmp
 ENV HF_HOME=/tmp/huggingface
 ENV TRANSFORMERS_CACHE=/tmp/huggingface
 ENV VLLM_CACHE_ROOT=/tmp/vllm
 ENV PYTHONUNBUFFERED=1
 ENV VLLM_LOGGING_LEVEL=INFO
 
-# Install transformers (Qwen requirement)
+# Install transformers (required for Qwen)
 RUN pip install --no-cache-dir "transformers>=4.51.0"
 
-# Create writable dirs
+
 RUN mkdir -p /tmp/huggingface /tmp/vllm /models
 
-# Bake the model
+# ✅ Bake model
 RUN python3 - <<EOF
 from huggingface_hub import snapshot_download
 
