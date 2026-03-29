@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
-echo "Starting vLLM server..."
+echo "Starting vLLM OpenAI server..."
 
-
+# Ensure cache dirs exist (CRITICAL FIX)
+mkdir -p /root/.cache/huggingface
 mkdir -p /tmp/vllm
-mkdir -p /root/.cache
 
 # GPU diagnostics
 nvidia-smi || echo "No GPU detected"
@@ -19,7 +19,8 @@ if torch.cuda.is_available():
 EOF
 
 
-exec vllm serve /models/Qwen3Guard-Gen-8B \
+exec python -m vllm.entrypoints.openai.api_server \
+    --model /models/Qwen3Guard-Gen-8B \
     --host 0.0.0.0 \
     --port 8080 \
     --dtype float16 \
