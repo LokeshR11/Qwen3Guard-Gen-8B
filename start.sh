@@ -17,6 +17,5 @@ exec vllm serve /models/Qwen3Guard-Gen-8B \
     --gpu-memory-utilization 0.80 \
     --tensor-parallel-size 1 \
     --trust-remote-code \
-    --log-level INFO \
     --enforce-eager \
     --max-num-seqs 4
