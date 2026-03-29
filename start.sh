@@ -31,7 +31,7 @@ if torch.cuda.is_available():
 EOF
 
 # 🚀 Start server
-exec python -m vllm.entrypoints.openai.api_server \
+exec python3 -m vllm.entrypoints.openai.api_server \
     --model /models/Qwen3Guard-Gen-8B \
     --host 0.0.0.0 \
     --port 8080 \
