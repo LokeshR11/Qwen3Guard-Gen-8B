@@ -48,9 +48,9 @@ spec:
                 cpu: "4"
             env:
               - name: HF_HOME
-                value: "/root/.cache/huggingface"
-              - name: HOME
-                value: "/root"
+                value: "/tmp/huggingface"
+              - name: TRANSFORMERS_CACHE
+                value: "/tmp/huggingface"
               - name: VLLM_CACHE_ROOT
                 value: "/tmp/vllm"
               - name: PYTHONUNBUFFERED
