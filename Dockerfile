@@ -24,4 +24,17 @@ RUN rm -rf /root/.cache/huggingface
 
 EXPOSE 8080
 
-CMD ["python", "-m", "vllm.entrypoints.openai.api_server", "--model", "/models/Qwen3Guard-Gen-8B", "--host", "0.0.0.0", "--port", "8080", "--dtype", "auto", "--max-model-len", "4096", "--gpu-memory-utilization", "0.85", "--tensor-parallel-size", "1", "--trust-remote-code", "--enforce-eager", "--max-num-seqs", "4"]
+# Override the base image ENTRYPOINT
+ENTRYPOINT []
+
+CMD ["python", "-m", "vllm.entrypoints.openai.api_server", \
+     "--model", "/models/Qwen3Guard-Gen-8B", \
+     "--host", "0.0.0.0", \
+     "--port", "8080", \
+     "--dtype", "auto", \
+     "--max-model-len", "4096", \
+     "--gpu-memory-utilization", "0.85", \
+     "--tensor-parallel-size", "1", \
+     "--trust-remote-code", \
+     "--enforce-eager", \
+     "--max-num-seqs", "4"]
