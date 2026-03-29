@@ -1,18 +1,20 @@
 FROM vllm/vllm-openai:latest
 
-# Environment
-ENV HF_HOME=/root/.cache/huggingface
-ENV HOME=/root
+
+ENV HF_HOME=/tmp/huggingface
+ENV TRANSFORMERS_CACHE=/tmp/huggingface
 ENV VLLM_CACHE_ROOT=/tmp/vllm
 ENV PYTHONUNBUFFERED=1
 ENV VLLM_LOGGING_LEVEL=INFO
 
-# Install transformers (Qwen3 requirement)
+# Install transformers (Qwen requirement)
 RUN pip install --no-cache-dir "transformers>=4.51.0"
 
+# Create writable dirs
+RUN mkdir -p /tmp/huggingface /tmp/vllm /models
+
 # Bake the model
-RUN mkdir -p /models/Qwen3Guard-Gen-8B && \
-    python3 - <<EOF
+RUN python3 - <<EOF
 from huggingface_hub import snapshot_download
 
 snapshot_download(
@@ -27,9 +29,6 @@ snapshot_download(
 print("✅ Model baked successfully!")
 EOF
 
-# Clean HF cache (keep image small)
-RUN rm -rf /root/.cache/huggingface
-
 # Copy startup script
 COPY start.sh /app/start.sh
 RUN chmod +x /app/start.sh
@@ -37,4 +36,3 @@ RUN chmod +x /app/start.sh
 EXPOSE 8080
 
 ENTRYPOINT ["/app/start.sh"]
-#Fix-v2
