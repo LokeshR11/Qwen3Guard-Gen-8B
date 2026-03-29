@@ -46,8 +46,6 @@ spec:
                 value: "/root/.cache/huggingface"
               - name: PYTHONUNBUFFERED
                 value: "1"
-              - name: VLLM_LOGGING_LEVEL
-                value: "INFO"
             readinessProbe:
               httpGet:
                 path: /v1/models
