@@ -34,3 +34,4 @@ EXPOSE 8080
 
 
 ENTRYPOINT ["/app/start.sh"]
+#Fixed-Version
