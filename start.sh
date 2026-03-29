@@ -3,6 +3,10 @@ set -e
 
 echo "Starting vLLM server..."
 
+# ✅ FIX: Create required directories
+mkdir -p /tmp/vllm
+mkdir -p /root/.cache
+
 # GPU diagnostics
 nvidia-smi || echo "No GPU detected"
 
@@ -14,10 +18,11 @@ if torch.cuda.is_available():
     print("VRAM:", torch.cuda.get_device_properties(0).total_memory // 1024**3, "GB")
 EOF
 
+
 exec vllm serve /models/Qwen3Guard-Gen-8B \
     --host 0.0.0.0 \
     --port 8080 \
-    --dtype auto \
+    --dtype float16 \
     --max-model-len 512 \
     --gpu-memory-utilization 0.70 \
     --tensor-parallel-size 1 \
