@@ -18,4 +18,5 @@ exec vllm serve /models/Qwen3Guard-Gen-8B \
     --tensor-parallel-size 1 \
     --trust-remote-code \
     --enforce-eager \
-    --max-num-seqs 1
+    --max-num-seqs 1 \
+    --swap-space 4
