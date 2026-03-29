@@ -4,12 +4,20 @@ set -e
 echo "Starting vLLM OpenAI server..."
 
 
-mkdir -p /tmp/huggingface
-mkdir -p /tmp/vllm
-
+export HOME=/tmp
 export HF_HOME=/tmp/huggingface
 export TRANSFORMERS_CACHE=/tmp/huggingface
 export VLLM_CACHE_ROOT=/tmp/vllm
+
+
+mkdir -p /tmp/huggingface
+mkdir -p /tmp/vllm
+
+# Debug
+echo "HF_HOME=$HF_HOME"
+echo "TRANSFORMERS_CACHE=$TRANSFORMERS_CACHE"
+echo "VLLM_CACHE_ROOT=$VLLM_CACHE_ROOT"
+echo "HOME=$HOME"
 
 # GPU diagnostics
 nvidia-smi || echo "No GPU detected"
@@ -22,7 +30,7 @@ if torch.cuda.is_available():
     print("VRAM:", torch.cuda.get_device_properties(0).total_memory // 1024**3, "GB")
 EOF
 
-# 🚀 Start OpenAI-compatible server
+# 🚀 Start server
 exec python -m vllm.entrypoints.openai.api_server \
     --model /models/Qwen3Guard-Gen-8B \
     --host 0.0.0.0 \
