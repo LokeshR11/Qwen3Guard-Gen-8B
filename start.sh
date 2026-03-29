@@ -3,7 +3,7 @@ set -e
 
 echo "Starting vLLM server..."
 
-# ✅ FIX: Create required directories
+
 mkdir -p /tmp/vllm
 mkdir -p /root/.cache
 
