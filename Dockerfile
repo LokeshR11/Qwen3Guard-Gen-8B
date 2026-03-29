@@ -18,7 +18,7 @@ snapshot_download(
     local_dir_use_symlinks=False,
     resume_download=True,
     max_workers=4,
-    ignore_patterns=["*.bin", "*.ot", "*.msgpack"]
+    ignore_patterns=["*.msgpack"]
 )
 print("✅ Model baked successfully!")
 EOF
