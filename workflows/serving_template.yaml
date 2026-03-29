@@ -10,6 +10,7 @@ metadata:
   labels:
     scenarios.ai.sap.com/id: "qwen3guard"
     ai.sap.com/version: "1.0.0"
+
 spec:
   template:
     apiVersion: "serving.kserve.io/v1beta1"
@@ -20,15 +21,19 @@ spec:
         autoscaling.knative.dev/targetBurstCapacity: "0"
       labels: |
         ai.sap.com/resourcePlan: infer.l
+
     spec: |
       predictor:
         imagePullSecrets:
           - name: docker-secret
+
         minReplicas: 1
         maxReplicas: 1
+
         containers:
           - name: kserve-container
             image: docker.io/lokeshr11/qwen3guard-gen-8b:v1.22
+
             ports:
               - containerPort: 8080
                 protocol: TCP
@@ -44,17 +49,23 @@ spec:
             env:
               - name: HF_HOME
                 value: "/root/.cache/huggingface"
+              - name: HOME
+                value: "/root"
+              - name: VLLM_CACHE_ROOT
+                value: "/tmp/vllm"
               - name: PYTHONUNBUFFERED
                 value: "1"
+
             readinessProbe:
               httpGet:
                 path: /v1/models
                 port: 8080
-              initialDelaySeconds: 120
+              initialDelaySeconds: 180   
               periodSeconds: 30
+
             livenessProbe:
               httpGet:
                 path: /v1/models
                 port: 8080
-              initialDelaySeconds: 180
+              initialDelaySeconds: 240   
               periodSeconds: 60
