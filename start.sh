@@ -28,4 +28,5 @@ exec python -m vllm.entrypoints.openai.api_server \
     --gpu-memory-utilization 0.70 \
     --tensor-parallel-size 1 \
     --trust-remote-code \
-    --max-num-seqs 1
+    --max-num-seqs 1 \
+    --disable-custom-all-reduce
