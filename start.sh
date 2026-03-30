@@ -8,7 +8,6 @@ export HOME=/tmp
 export HF_HOME=/tmp/huggingface
 export TRANSFORMERS_CACHE=/tmp/huggingface
 export VLLM_CACHE_ROOT=/tmp/vllm
-export VLLM_USE_V1=0
 
 
 mkdir -p /tmp/huggingface
