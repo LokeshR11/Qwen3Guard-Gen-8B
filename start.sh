@@ -37,7 +37,7 @@ exec python3 -m vllm.entrypoints.openai.api_server \
     --port 8080 \
     --dtype float16 \
     --max-model-len 256 \
-    --gpu-memory-utilization 0.70 \
+    --gpu-memory-utilization 0.90 \
     --tensor-parallel-size 1 \
     --trust-remote-code \
     --max-num-seqs 1  \
