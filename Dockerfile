@@ -1,4 +1,5 @@
-FROM vllm/vllm-openai:v0.6.6
+FROM vllm/vllm-openai:latest
+ENV VLLM_USE_V1=0
 
 
 ENV HOME=/tmp
