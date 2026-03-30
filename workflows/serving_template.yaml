@@ -60,8 +60,8 @@ spec:
               httpGet:
                 path: /v1/models
                 port: 8080
-              initialDelaySeconds: 60   
-              periodSeconds: 20
+              initialDelaySeconds: 180   
+              periodSeconds: 30
 
             livenessProbe:
               httpGet:
