@@ -32,7 +32,7 @@ spec:
 
         containers:
           - name: kserve-container
-            image: docker.io/lokeshr11/qwen3guard-gen-8b:v1.34
+            image: docker.io/lokeshr11/qwen3guard-gen-8b:v1.35
 
             ports:
               - containerPort: 8080
