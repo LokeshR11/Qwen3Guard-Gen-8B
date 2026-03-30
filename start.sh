@@ -42,5 +42,4 @@ exec python3 -m vllm.entrypoints.openai.api_server \
     --tensor-parallel-size 1 \
     --trust-remote-code \
     --max-num-seqs 1  \
-    --disable-async-output-proc  \
     --enforce-eager
