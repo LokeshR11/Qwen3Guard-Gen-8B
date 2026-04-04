@@ -7,7 +7,7 @@ echo " Starting vLLM OpenAI server with FULL DEBUG..."
 # Environment Setup
 # =========================================================
 export VLLM_USE_V1=0
-export VLLM_WORKER_MULTIPROC_METHOD=spawn
+export VLLM_WORKER_MULTIPROC_METHOD=none
 
 export HOME=/tmp
 export HF_HOME=/tmp/huggingface
@@ -58,6 +58,7 @@ exec python3 -u -m vllm.entrypoints.openai.api_server \
   --max-num-seqs 1 \
   --enforce-eager \
   --log-level debug \
-  --disable-log-requests false \
-  --disable-log-stats false \
+  --engine-use-ray false \
+  --distributed-executor-backend mp \
+  --disable-custom-all-reduce
   2>&1 | tee /tmp/vllm_debug.log
