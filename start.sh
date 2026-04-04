@@ -1,36 +1,52 @@
 #!/bin/bash
-set -e
+set -ex  
 
-echo "Starting vLLM OpenAI server..."
+echo " Starting vLLM OpenAI server with FULL DEBUG..."
 
-# -------------------------------
-# Environment
-# -------------------------------
+# =========================================================
+# Environment Setup
+# =========================================================
 export VLLM_USE_V1=0
 export VLLM_WORKER_MULTIPROC_METHOD=spawn
+
 export HOME=/tmp
 export HF_HOME=/tmp/huggingface
 export VLLM_CACHE_ROOT=/tmp/vllm
 
+
+export VLLM_LOGGING_LEVEL=DEBUG
+export CUDA_LAUNCH_BLOCKING=1
+export NCCL_DEBUG=INFO
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
 mkdir -p /tmp/huggingface /tmp/vllm
 
-# -------------------------------
-# GPU Debug Info
-# -------------------------------
-nvidia-smi || echo "No GPU detected"
+echo " Environment variables set"
+
+# =========================================================
+# GPU DEBUG INFO (BEFORE MODEL LOAD)
+# =========================================================
+echo "================ GPU STATUS BEFORE MODEL LOAD ================"
+nvidia-smi || echo " No GPU detected"
 
 python3 - <<EOF
 import torch
 print("CUDA available:", torch.cuda.is_available())
 if torch.cuda.is_available():
     print("GPU:", torch.cuda.get_device_name(0))
-    print("VRAM:", torch.cuda.get_device_properties(0).total_memory // 1024**3, "GB")
+    print("Total VRAM:", torch.cuda.get_device_properties(0).total_memory // 1024**3, "GB")
+    print("Allocated VRAM:", torch.cuda.memory_allocated() // 1024**3, "GB")
+    print("Reserved VRAM:", torch.cuda.memory_reserved() // 1024**3, "GB")
 EOF
 
-# -------------------------------
-# Start vLLM server
-# -------------------------------
-exec python3 -m vllm.entrypoints.openai.api_server \
+echo "=============================================================="
+
+# =========================================================
+# Start vLLM Server (WITH FULL LOGGING)
+# =========================================================
+echo " Launching vLLM..."
+
+exec python3 -u -m vllm.entrypoints.openai.api_server \
   --model /models/Qwen3Guard-Gen-8B \
   --host 0.0.0.0 \
   --port 8080 \
@@ -40,4 +56,8 @@ exec python3 -m vllm.entrypoints.openai.api_server \
   --tensor-parallel-size 1 \
   --trust-remote-code \
   --max-num-seqs 1 \
-  --enforce-eager
+  --enforce-eager \
+  --log-level debug \
+  --disable-log-requests false \
+  --disable-log-stats false \
+  2>&1 | tee /tmp/vllm_debug.log
